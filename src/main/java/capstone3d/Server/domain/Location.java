@@ -8,14 +8,18 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class Room {
+public class Location {
 
     @Id
     @GeneratedValue
-    @Column(name = "room_id")
+    @Column(name = "location_id")
     private Long id;
 
-    private String url1;
+    @OneToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
 
-    private String url2;
+    private Double lat;
+
+    private Double lon;
 }

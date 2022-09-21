@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -13,14 +12,9 @@ public class RoomRepository {
 
     private final EntityManager em;
 
-    public List<Room> findAll() {
-        return em.createQuery("select r from Room r", Room.class).getResultList();
-    }
-
-    public Room findByLoc(Double lat, Double lon) {
-        return em.createQuery("select r from Room r where r.lat = :lat and r.lon =:lon", Room.class)
-                .setParameter("lat", lat)
-                .setParameter("lon", lon)
+    public Room findById(long id) {
+        return em.createQuery("select r from Room r where r.id = :id", Room.class)
+                .setParameter("id", id)
                 .getSingleResult();
     }
 }
