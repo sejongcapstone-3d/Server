@@ -21,9 +21,4 @@ public class RoomListApiController {
     public List<Location> locationList() {
         return locationRepository.findAll();
     }
-
-    @GetMapping("/why")
-    public Room roomCome(){
-        return roomRepository.findById(1);
-    }
 }
