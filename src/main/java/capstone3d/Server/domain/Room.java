@@ -11,11 +11,21 @@ import javax.persistence.*;
 public class Room {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_id")
     private Long id;
 
-    private String url1;
+    private String empty_room_url;
 
-    private String url2;
+    private String full_room_url;
+
+    private Double room_width;
+
+    private Double room_height;
+
+    private Double room_depth;
+
+    @ManyToOne
+    @JoinColumn(name = "user_code")
+    private User user;
 }
