@@ -1,10 +1,10 @@
 package capstone3d.Server.api;
 
-import capstone3d.Server.domain.Dto.LoginRequest;
-import capstone3d.Server.domain.Dto.SignUpRequest;
-import capstone3d.Server.domain.Dto.TokenResponse;
-import capstone3d.Server.domain.Dto.UserResponse;
-import capstone3d.Server.jwt.TokenProvider;
+import capstone3d.Server.domain.dto.request.LoginRequest;
+import capstone3d.Server.domain.dto.request.SignUpRequest;
+import capstone3d.Server.domain.dto.response.TokenResponse;
+import capstone3d.Server.domain.dto.response.UserResponse;
+import capstone3d.Server.jwt.JwtTokenProvider;
 import capstone3d.Server.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final TokenProvider tokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/sign-up")
     public UserResponse singUp(
@@ -30,6 +30,6 @@ public class UserController {
             @RequestBody LoginRequest loginRequest
     ) throws JsonProcessingException {
         UserResponse userResponse = userService.login(loginRequest);
-        return tokenProvider.createTokensByLogin(userResponse);
+        return jwtTokenProvider.createTokensByLogin(userResponse);
     }
 }

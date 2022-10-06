@@ -1,8 +1,8 @@
 package capstone3d.Server.service;
 
-import capstone3d.Server.domain.Dto.LoginRequest;
-import capstone3d.Server.domain.Dto.SignUpRequest;
-import capstone3d.Server.domain.Dto.UserResponse;
+import capstone3d.Server.domain.dto.request.LoginRequest;
+import capstone3d.Server.domain.dto.request.SignUpRequest;
+import capstone3d.Server.domain.dto.response.UserResponse;
 import capstone3d.Server.domain.User;
 import capstone3d.Server.exception.BadRequestException;
 import capstone3d.Server.repository.UserRepository;
@@ -30,7 +30,6 @@ public class UserService {
         if (isExistNickname) throw new BadRequestException("이미 존재하는 닉네임입니다.");
 
         String encodePassword = passwordEncoder.encode(signUpRequest.getPassword());
-
         User user = new User(
                 signUpRequest.getIdentification(),
                 encodePassword,

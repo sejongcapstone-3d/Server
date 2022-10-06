@@ -1,14 +1,16 @@
 package capstone3d.Server.domain.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class Subject {
 
-    private final Long id;
-    private final String identification;
-    private final String nickname;
-    private final String type;
+    private Long id;
+    private String identification;
+    private String nickname;
+    private String type;
 
     private Subject(Long id, String identification, String nickname, String type) {
         this.id = id;
