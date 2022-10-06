@@ -26,6 +26,6 @@ public class Room {
     private Double room_depth;
 
     @ManyToOne
-    @JoinColumn(name = "user_code")
+    @JoinColumn(name = "user_id")
     private User user;
 }
