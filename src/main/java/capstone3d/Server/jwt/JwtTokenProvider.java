@@ -1,8 +1,10 @@
 package capstone3d.Server.jwt;
 
+import capstone3d.Server.domain.dao.RedisDao;
 import capstone3d.Server.domain.dto.Subject;
 import capstone3d.Server.domain.dto.response.TokenResponse;
 import capstone3d.Server.domain.dto.response.UserResponse;
+import capstone3d.Server.exception.ForbiddenException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
@@ -16,19 +18,25 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
     private final ObjectMapper objectMapper;
+    private final RedisDao redisDao;
 
     @Value("${spring.jwt.key}")
     private String secretKey;
 
     @Value("${spring.jwt.live.atk}")
     private Long atkLive;
+
+    @Value("${spring.jwt.live.rtk}")
+    private Long rtkLive;
 
     private Key key;
 
@@ -44,8 +52,15 @@ public class JwtTokenProvider {
                 userResponse.getId(),
                 userResponse.getIdentification(),
                 userResponse.getNickname());
+        Subject rtkSubject = Subject.rtk(
+                userResponse.getId(),
+                userResponse.getIdentification(),
+                userResponse.getNickname());
+
         String atk = createToken(atkSubject, atkLive);
-        return new TokenResponse(atk, null);
+        String rtk = createToken(rtkSubject, rtkLive);
+        redisDao.setValues(userResponse.getIdentification(), rtk, Duration.ofMillis(rtkLive));
+        return new TokenResponse(atk, rtk);
     }
 
     private String createToken(Subject subject, Long tokenLive) throws JsonProcessingException {
@@ -64,5 +79,16 @@ public class JwtTokenProvider {
     public Subject getSubject(String atk) throws JsonProcessingException {
         String subjectStr = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(atk).getBody().getSubject();
         return objectMapper.readValue(subjectStr, Subject.class);
+    }
+
+    public TokenResponse reissueAtk(UserResponse userResponse) throws JsonProcessingException {
+        String rtkInRedis = redisDao.getValues(userResponse.getIdentification());
+        if(Objects.isNull(rtkInRedis)) throw new ForbiddenException("인증 정보가 만료되었습니다.");
+        Subject atkSubject = Subject.atk(
+                userResponse.getId(),
+                userResponse.getIdentification(),
+                userResponse.getNickname());
+        String atk = createToken(atkSubject, atkLive);
+        return new TokenResponse(atk, null);
     }
 }
