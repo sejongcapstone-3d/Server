@@ -1,4 +1,4 @@
-package capstone3d.Server.domain.Dto;
+package capstone3d.Server.domain.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

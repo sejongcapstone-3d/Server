@@ -1,4 +1,4 @@
-package capstone3d.Server.domain.Dto;
+package capstone3d.Server.domain.dto.response;
 
 import capstone3d.Server.domain.User;
 import lombok.Getter;

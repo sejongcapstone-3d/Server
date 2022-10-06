@@ -1,8 +1,8 @@
 package capstone3d.Server.jwt;
 
-import capstone3d.Server.domain.Dto.Subject;
-import capstone3d.Server.domain.Dto.TokenResponse;
-import capstone3d.Server.domain.Dto.UserResponse;
+import capstone3d.Server.domain.dto.Subject;
+import capstone3d.Server.domain.dto.response.TokenResponse;
+import capstone3d.Server.domain.dto.response.UserResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
@@ -15,14 +15,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
-public class TokenProvider {
+public class JwtTokenProvider {
 
     private final ObjectMapper objectMapper;
 
@@ -61,5 +59,10 @@ public class TokenProvider {
                 .setExpiration(new Date(date.getTime() + tokenLive))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public Subject getSubject(String atk) throws JsonProcessingException {
+        String subjectStr = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(atk).getBody().getSubject();
+        return objectMapper.readValue(subjectStr, Subject.class);
     }
 }
