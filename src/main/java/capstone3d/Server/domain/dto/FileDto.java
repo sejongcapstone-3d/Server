@@ -12,9 +12,7 @@ public class FileDto {
 
     private double lon;
 
-    private String url;
-
     private MultipartFile file;
 
-    private User User;
+    private User user;
 }

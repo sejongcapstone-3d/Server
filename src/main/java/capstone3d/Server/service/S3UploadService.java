@@ -19,15 +19,16 @@ public class S3UploadService {
 
     private final AmazonS3 amazonS3;
 
-    public String uploadFile(MultipartFile multipartFile) throws IOException {
-        String fileName = multipartFile.getOriginalFilename();
+    public String uploadFile(MultipartFile multipartFile, String username) throws IOException {
+        String fileName = "user/" + username + "/" + multipartFile.getOriginalFilename();
 
         try {
             ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentType("application/pts");
-
+            metadata.setContentType(multipartFile.getContentType());
+            metadata.setContentLength(multipartFile.getResource().contentLength());
             amazonS3.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
+
         } catch (AmazonServiceException e) {
             e.printStackTrace();
         } catch (SdkClientException e) {

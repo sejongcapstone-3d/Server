@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,11 +16,16 @@ public class UploadApiController {
 
     private final S3UploadService s3UploadService;
 
-    @PostMapping("/upload")
-    public String uploadFile(FileDto fileDto) throws IOException {
-        String url = s3UploadService.uploadFile(fileDto.getFile());
+    @GetMapping("/upload")
+    public String uploadFile(){
+        return "upload";
+    }
 
-        return "redirect:/";
+    @PostMapping("/upload")
+    public String uploadFile(FileDto fileDto, Principal principal) throws IOException {
+        String url = s3UploadService.uploadFile(fileDto.getFile(), principal.getName());
+
+        return url;
     }
 
     @GetMapping("/upload/test")
