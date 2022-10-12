@@ -15,17 +15,21 @@ public class Room {
     @Column(name = "room_id")
     private Long id;
 
+    private String name;
+
     private String empty_room_url;
 
     private String full_room_url;
 
-    private Double room_width;
+    private String room_img_url;
 
-    private Double room_height;
+    private int room_width;
 
-    private Double room_depth;
+    private int room_height;
 
-    @ManyToOne
+    private int room_depth;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 }

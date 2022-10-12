@@ -22,6 +22,7 @@ public class User {
     @Column(unique = true)
     private String identification;
 
+    @JsonIgnore
     private String password;
 
     private String name;
@@ -34,6 +35,7 @@ public class User {
     private String business_name;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Room> room_list = new ArrayList<>();
 
     public User(String identification, String password, String name,

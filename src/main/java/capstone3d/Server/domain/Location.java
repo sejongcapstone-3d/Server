@@ -15,7 +15,7 @@ public class Location {
     @Column(name = "location_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "room_id")
     private Room room;
 

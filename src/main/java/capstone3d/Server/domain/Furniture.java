@@ -19,9 +19,11 @@ public class Furniture {
 
     private String furniture_url;
 
-    private Double furniture_width;
+    private String furniture_img_url;
 
-    private Double furniture_height;
+    private int furniture_width;
 
-    private Double furniture_depth;
+    private int furniture_height;
+
+    private int furniture_depth;
 }
