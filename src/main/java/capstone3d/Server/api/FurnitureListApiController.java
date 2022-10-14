@@ -19,9 +19,9 @@ public class FurnitureListApiController {
 
     @GetMapping("/furniture")
     public List<FurnitureDto> furnitureList() {
-        List<Furniture> furnitures = furnitureRepository.findAll();
-        List<FurnitureDto> collect = furnitures.stream()
-                .map(f -> new FurnitureDto(f.getCategory(), f.getFurniture_url(), f.getFurniture_width(), f.getFurniture_height(), f.getFurniture_depth()))
+        List<Furniture> furniture = furnitureRepository.findAll();
+        List<FurnitureDto> collect = furniture.stream()
+                .map(f -> new FurnitureDto(f.getCategory(), f.getFurniture_url(), f.getFurniture_img_url(), f.getFurniture_width(), f.getFurniture_height(), f.getFurniture_depth()))
                 .collect(Collectors.toList());
         return collect;
     }
@@ -33,10 +33,12 @@ public class FurnitureListApiController {
 
         private String furniture_url;
 
-        private Double furniture_width;
+        private String furniture_img_url;
 
-        private Double furniture_height;
+        private int furniture_width;
 
-        private Double furniture_depth;
+        private int furniture_height;
+
+        private int furniture_depth;
     }
 }

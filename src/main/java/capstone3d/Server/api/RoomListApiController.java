@@ -22,7 +22,7 @@ public class RoomListApiController {
     public List<LocationDto> locationList() {
         List<Location> locations = locationRepository.findAll();
         List<LocationDto> collect = locations.stream()
-                .map(l -> new LocationDto(l.getRoom(), l.getLat(), l.getLon()))
+                .map(l -> new LocationDto(l.getRoom(), l.getLat(), l.getLon(), l.getRoom().getUser().getBusiness_name(), l.getRoom().getUser().getPhone()))
                 .collect(Collectors.toList());
         return collect;
     }
@@ -35,5 +35,9 @@ public class RoomListApiController {
         private Double lat;
 
         private Double lon;
+
+        private String business_name;
+
+        private String phone;
     }
 }
