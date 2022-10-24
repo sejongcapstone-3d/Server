@@ -27,9 +27,4 @@ public class UploadApiController {
 
         return url;
     }
-
-    @GetMapping("/upload/test")
-    public String test() {
-        return "good";
-    }
 }

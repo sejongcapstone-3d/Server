@@ -11,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static capstone3d.Server.domain.Role.ROLE_ADMIN;
+import static capstone3d.Server.domain.Role.ROLE_USER;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -30,13 +33,27 @@ public class UserService {
         if (isExistNickname) throw new BadRequestException("이미 존재하는 닉네임입니다.");
 
         String encodePassword = passwordEncoder.encode(signUpRequest.getPassword());
-        User user = new User(
-                signUpRequest.getIdentification(),
-                encodePassword,
-                signUpRequest.getName(),
-                signUpRequest.getNickname(),
-                signUpRequest.getPhone(),
-                signUpRequest.getBusiness_name());
+
+        User user;
+        if (signUpRequest.getIdentification().equals("master")) {
+            user = User.builder().identification(signUpRequest.getIdentification())
+                    .password(encodePassword)
+                    .name(signUpRequest.getName())
+                    .nickname(signUpRequest.getNickname())
+                    .phone(signUpRequest.getPhone())
+                    .business_name(signUpRequest.getBusiness_name())
+                    .role(ROLE_ADMIN)
+                    .build();
+        } else {
+            user = User.builder().identification(signUpRequest.getIdentification())
+                    .password(encodePassword)
+                    .name(signUpRequest.getName())
+                    .nickname(signUpRequest.getNickname())
+                    .phone(signUpRequest.getPhone())
+                    .business_name(signUpRequest.getBusiness_name())
+                    .role(ROLE_USER)
+                    .build();
+        }
 
         userRepository.save(user);
         return UserResponse.of(user);
