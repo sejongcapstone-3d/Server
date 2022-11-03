@@ -3,17 +3,16 @@ package capstone3d.Server.api;
 import capstone3d.Server.domain.dto.UserDetails;
 import capstone3d.Server.domain.dto.request.LoginRequest;
 import capstone3d.Server.domain.dto.request.SignUpRequest;
+import capstone3d.Server.domain.dto.request.UpdateRequest;
 import capstone3d.Server.domain.dto.response.TokenResponse;
+import capstone3d.Server.domain.dto.response.UpdateResponse;
 import capstone3d.Server.domain.dto.response.UserResponse;
 import capstone3d.Server.jwt.JwtTokenProvider;
 import capstone3d.Server.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,8 +38,23 @@ public class UserController {
     @GetMapping("/reissue")
     public TokenResponse reissue(
             @AuthenticationPrincipal UserDetails userDetails
-            ) throws JsonProcessingException {
+    ) throws JsonProcessingException {
         UserResponse userResponse = UserResponse.of(userDetails.getUser());
         return jwtTokenProvider.reissueAtk(userResponse);
+    }
+
+    @PutMapping("/user")
+    public UpdateResponse update(
+            @RequestBody UpdateRequest updateRequest
+            ) {
+        return userService.update(updateRequest);
+    }
+
+    @DeleteMapping("/user/{password}")
+    public String withdraw(
+            @PathVariable String password
+    ) {
+        userService.withdraw(password);
+        return "redirect:/";
     }
 }

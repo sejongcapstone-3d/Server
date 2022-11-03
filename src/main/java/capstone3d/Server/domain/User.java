@@ -36,17 +36,24 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Room> room_list = new ArrayList<>();
 
-//    public User(String identification, String password, String name,
-//                String nickname, String phone, String business_name) {
-//        this.identification = identification;
-//        this.password = password;
-//        this.name = name;
-//        this.nickname = nickname;
-//        this.phone = phone;
-//        this.business_name = business_name;
-//    }
+
+    /*회원수정 메소드*/
+
+    public void updateNickName(String nickName) {
+        this.nickname = nickName;
+    }
+
+    public void updateBusiness_name(String business_name) {
+        this.business_name = business_name;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+
 }
