@@ -8,10 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileDto {
     private String title;
 
-    private double lat;
-
-    private double lon;
-
     private MultipartFile file;
 
     private User user;

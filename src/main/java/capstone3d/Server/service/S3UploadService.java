@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +22,8 @@ public class S3UploadService {
 
     private final AmazonS3 amazonS3;
 
-    public String uploadFile(MultipartFile multipartFile, String username) throws IOException {
-        String fileName = "user/" + username + "/" + multipartFile.getOriginalFilename();
+    public String uploadFile(MultipartFile multipartFile, String username, String title) throws IOException {
+        String fileName = "user/" + username + "/" + title  + "/" + multipartFile.getOriginalFilename();
 
         try {
             ObjectMetadata metadata = new ObjectMetadata();
@@ -36,5 +39,42 @@ public class S3UploadService {
         }
 
         return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
+    public Map<String, String> uploadFiles(List<MultipartFile> multipartFiles, String username, String title) throws IOException {
+        Map<String, String> urls = new HashMap<>();
+
+        for (MultipartFile multipartFile :
+                multipartFiles) {
+            String fileName = "user/" + username + "/" + title + "/" + multipartFile.getOriginalFilename();
+            try {
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentType(multipartFile.getContentType());
+                metadata.setContentLength(multipartFile.getResource().contentLength());
+                amazonS3.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
+
+            } catch (AmazonServiceException e) {
+                e.printStackTrace();
+            } catch (SdkClientException e) {
+                e.printStackTrace();
+            }
+
+            int pos = multipartFile.getOriginalFilename().lastIndexOf('.');
+            switch (multipartFile.getOriginalFilename().substring(pos+1, multipartFile.getOriginalFilename().length())) {
+                case "img":
+                    urls.put("img", amazonS3.getUrl(bucket, fileName).toString());
+                    break;
+                case "json":
+                    if (multipartFile.getOriginalFilename().contains("empty")) {
+                        urls.put("empty", amazonS3.getUrl(bucket, fileName).toString());
+                    } else if (multipartFile.getOriginalFilename().contains("full")){
+                        urls.put("full", amazonS3.getUrl(bucket, fileName).toString());
+                    }
+                    break;
+            }
+        }
+
+        return urls;
     }
 }
