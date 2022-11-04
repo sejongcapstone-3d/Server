@@ -16,7 +16,7 @@ public class RoomApiController {
     private final RoomRepository roomRepository;
 
     @GetMapping("/room/{id}")
-    public RoomUrlDto RoomUrl(@PathVariable("id") int id) {
+    public RoomUrlDto RoomUrl(@PathVariable("id") Long id) {
         Room findRoom = roomRepository.findById(id);
         User user = findRoom.getUser();
         String business_name = user.getBusiness_name();

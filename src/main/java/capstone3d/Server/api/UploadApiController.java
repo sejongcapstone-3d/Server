@@ -23,7 +23,7 @@ public class UploadApiController {
 
     @PostMapping("/upload")
     public String uploadFile(FileDto fileDto, Principal principal) throws IOException {
-        String url = s3UploadService.uploadFile(fileDto.getFile(), principal.getName());
+        String url = s3UploadService.uploadFile(fileDto.getFile(), principal.getName(), fileDto.getTitle());
 
         return url;
     }
