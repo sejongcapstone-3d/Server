@@ -17,4 +17,8 @@ public class RoomRepository {
                 .setParameter("id", id)
                 .getSingleResult();
     }
+
+    public void save(Room room) {
+        em.persist(room);
+    }
 }

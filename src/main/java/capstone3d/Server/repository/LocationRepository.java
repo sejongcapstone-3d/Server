@@ -16,4 +16,8 @@ public class LocationRepository {
     public List<Location> findAll() {
         return em.createQuery("select l from Location l", Location.class).getResultList();
     }
+
+    public void save(Location location) {
+        em.persist(location);
+    }
 }
