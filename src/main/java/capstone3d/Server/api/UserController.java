@@ -50,9 +50,9 @@ public class UserController {
         return userService.update(updateRequest);
     }
 
-    @DeleteMapping("/user/{password}")
+    @PostMapping("/user")
     public String withdraw(
-            @PathVariable String password
+            @RequestBody String password
     ) {
         userService.withdraw(password);
         return "redirect:/";
