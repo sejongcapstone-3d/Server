@@ -5,6 +5,7 @@ import capstone3d.Server.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class UploadApiController {
     }
 
     @PostMapping("/upload")
-    public String uploadFile(FileDto fileDto, Principal principal) throws IOException {
+    public String uploadFile(@RequestBody FileDto fileDto, Principal principal) throws IOException {
         String url = s3UploadService.uploadFile(fileDto.getFile(), principal.getName(), fileDto.getTitle());
 
         return url;

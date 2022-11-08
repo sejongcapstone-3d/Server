@@ -5,6 +5,7 @@ import capstone3d.Server.service.AdminService;
 import capstone3d.Server.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -17,7 +18,7 @@ public class AdminController {
     private final S3UploadService s3UploadService;
 
     @PostMapping("/admin/upload")
-    public String uploadFile(AdminUploadFileDto adminUploadFileDto) throws IOException {
+    public String uploadFile(@RequestBody AdminUploadFileDto adminUploadFileDto) throws IOException {
 
         adminService.saveFile(adminUploadFileDto, adminUploadFileDto.getUserIdentification());
 
