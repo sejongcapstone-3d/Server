@@ -9,6 +9,4 @@ public class FileDto {
     private String title;
 
     private MultipartFile file;
-
-    private User user;
 }

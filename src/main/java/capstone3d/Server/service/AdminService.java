@@ -38,7 +38,13 @@ public class AdminService {
         room.setRoom_width(adminUploadFileDto.getRoom_width());
         room.setRoom_height(adminUploadFileDto.getRoom_height());
         room.setRoom_depth(adminUploadFileDto.getRoom_depth());
-        room.setRoom_img_url(urls.get("img"));
+        if (urls.get("png") != null) {
+            room.setRoom_img_url(urls.get("png"));
+        } else if (urls.get("jpg") != null) {
+            room.setRoom_img_url(urls.get("jpg"));
+        } else if (urls.get("jpeg") != null) {
+            room.setRoom_img_url(urls.get("jpeg"));
+        }
         room.setFull_room_url(urls.get("full"));
         room.setEmpty_room_url(urls.get("empty"));
 

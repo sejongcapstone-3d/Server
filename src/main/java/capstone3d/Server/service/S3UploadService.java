@@ -62,8 +62,14 @@ public class S3UploadService {
 
             int pos = multipartFile.getOriginalFilename().lastIndexOf('.');
             switch (multipartFile.getOriginalFilename().substring(pos+1, multipartFile.getOriginalFilename().length())) {
-                case "img":
-                    urls.put("img", amazonS3.getUrl(bucket, fileName).toString());
+                case "png":
+                    urls.put("png", amazonS3.getUrl(bucket, fileName).toString());
+                    break;
+                case "jpg":
+                    urls.put("jpg", amazonS3.getUrl(bucket, fileName).toString());
+                    break;
+                case "jpeg":
+                    urls.put("jpeg", amazonS3.getUrl(bucket, fileName).toString());
                     break;
                 case "json":
                     if (multipartFile.getOriginalFilename().contains("empty")) {

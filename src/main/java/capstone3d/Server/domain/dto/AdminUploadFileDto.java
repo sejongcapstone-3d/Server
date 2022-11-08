@@ -12,6 +12,8 @@ public class AdminUploadFileDto {
 
     private List<MultipartFile> files;
 
+    private String userIdentification;
+
     private double lat;
 
     private double lon;
