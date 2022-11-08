@@ -5,12 +5,14 @@ import capstone3d.Server.domain.User;
 import capstone3d.Server.repository.RoomRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin
 public class RoomApiController {
 
     private final RoomRepository roomRepository;
