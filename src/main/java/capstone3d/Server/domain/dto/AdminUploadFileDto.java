@@ -23,4 +23,6 @@ public class AdminUploadFileDto {
     private int room_height;
 
     private int room_depth;
+
+    private String address;
 }

@@ -54,6 +54,7 @@ public class AdminService {
         location.setRoom(room);
         location.setLat(adminUploadFileDto.getLat());
         location.setLon(adminUploadFileDto.getLon());
+        location.setAddress(adminUploadFileDto.getAddress());
 
         locationRepository.save(location);
 

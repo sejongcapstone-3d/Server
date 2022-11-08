@@ -24,7 +24,7 @@ public class RoomListApiController {
     public List<LocationDto> locationList() {
         List<Location> locations = locationRepository.findAll();
         List<LocationDto> collect = locations.stream()
-                .map(l -> new LocationDto(l.getRoom(), l.getLat(), l.getLon(), l.getRoom().getUser().getBusiness_name(), l.getRoom().getUser().getPhone()))
+                .map(l -> new LocationDto(l.getRoom(), l.getLat(), l.getLon(), l.getRoom().getUser().getBusiness_name(), l.getRoom().getUser().getPhone(), l.getAddress()))
                 .collect(Collectors.toList());
         return collect;
     }
@@ -41,5 +41,7 @@ public class RoomListApiController {
         private String business_name;
 
         private String phone;
+
+        private String address;
     }
 }
