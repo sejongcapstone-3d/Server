@@ -1,9 +1,9 @@
 package capstone3d.Server.api;
 
-import capstone3d.Server.domain.dto.FileDto;
 import capstone3d.Server.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -21,11 +21,8 @@ public class UploadApiController {
     }
 
     @PostMapping("/upload")
-    public String uploadFile(FileDto fileDto, Principal principal) throws IOException {
-        System.out.println("fileDto = " + fileDto.getTitle());
-        System.out.println("fileDto = " + fileDto.getFile().getOriginalFilename());
-        System.out.println("principal = " + principal.getName());
-        String url = s3UploadService.uploadFile(fileDto.getFile(), principal.getName(), fileDto.getTitle());
+    public String uploadFile(MultipartFile multipartFile, String title, Principal principal) throws IOException {
+        String url = s3UploadService.uploadFile(multipartFile, principal.getName(), title);
 
         return url;
     }
