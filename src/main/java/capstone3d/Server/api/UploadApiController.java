@@ -20,9 +20,9 @@ public class UploadApiController {
     }
 
     @PostMapping("/upload")
-    public String uploadFile(MultipartFile multipartFile, String title) throws IOException {
+    public String uploadFile(MultipartFile file, String title) throws IOException {
 
-        String url = s3UploadService.uploadFile(multipartFile, title);
+        String url = s3UploadService.uploadFile(file, title);
 
         return url;
     }

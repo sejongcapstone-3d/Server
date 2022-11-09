@@ -24,21 +24,18 @@ public class S3UploadService {
 
     private final AmazonS3 amazonS3;
 
-    public String uploadFile(MultipartFile multipartFile, String title) throws IOException {
+    public String uploadFile(MultipartFile file, String title) throws IOException {
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userId = userDetails.getUser().getIdentification();
 
-        System.out.println(userId);
-        System.out.println(multipartFile.getOriginalFilename());
-        System.out.println(title);
-        String fileName = "user/" + userId + "/" + title  + "/" + multipartFile.getOriginalFilename();
+        String fileName = "user/" + userId + "/" + title  + "/" + file.getOriginalFilename();
 
         try {
             ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentType(multipartFile.getContentType());
-            metadata.setContentLength(multipartFile.getResource().contentLength());
-            amazonS3.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
+            metadata.setContentType(file.getContentType());
+            metadata.setContentLength(file.getResource().contentLength());
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
 
         } catch (AmazonServiceException e) {
