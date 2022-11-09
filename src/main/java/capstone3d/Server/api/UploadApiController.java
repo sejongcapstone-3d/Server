@@ -21,7 +21,7 @@ public class UploadApiController {
     }
 
     @PostMapping("/upload")
-    public String uploadFile(@RequestBody FileDto fileDto, Principal principal) throws IOException {
+    public String uploadFile(FileDto fileDto, Principal principal) throws IOException {
         String url = s3UploadService.uploadFile(fileDto.getFile(), principal.getName(), fileDto.getTitle());
 
         return url;

@@ -20,7 +20,7 @@ public class AdminController {
     private final S3UploadService s3UploadService;
 
     @PostMapping("/admin/upload")
-    public String uploadFile(@RequestBody AdminUploadFileDto adminUploadFileDto) throws IOException {
+    public String uploadFile(AdminUploadFileDto adminUploadFileDto) throws IOException {
 
         adminService.saveFile(adminUploadFileDto, adminUploadFileDto.getUserIdentification());
 
