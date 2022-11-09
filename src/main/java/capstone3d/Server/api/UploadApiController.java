@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,8 +20,9 @@ public class UploadApiController {
     }
 
     @PostMapping("/upload")
-    public String uploadFile(MultipartFile multipartFile, String title, Principal principal) throws IOException {
-        String url = s3UploadService.uploadFile(multipartFile, principal.getName(), title);
+    public String uploadFile(MultipartFile multipartFile, String title) throws IOException {
+
+        String url = s3UploadService.uploadFile(multipartFile, title);
 
         return url;
     }

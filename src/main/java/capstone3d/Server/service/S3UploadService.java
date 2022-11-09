@@ -1,11 +1,13 @@
 package capstone3d.Server.service;
 
+import capstone3d.Server.domain.dto.UserDetails;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,8 +24,12 @@ public class S3UploadService {
 
     private final AmazonS3 amazonS3;
 
-    public String uploadFile(MultipartFile multipartFile, String username, String title) throws IOException {
-        String fileName = "user/" + username + "/" + title  + "/" + multipartFile.getOriginalFilename();
+    public String uploadFile(MultipartFile multipartFile, String title) throws IOException {
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userId = userDetails.getUser().getIdentification();
+
+        String fileName = "user/" + userId + "/" + title  + "/" + multipartFile.getOriginalFilename();
 
         try {
             ObjectMetadata metadata = new ObjectMetadata();
