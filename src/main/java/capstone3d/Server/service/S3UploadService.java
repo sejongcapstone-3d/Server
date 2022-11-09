@@ -29,6 +29,9 @@ public class S3UploadService {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userId = userDetails.getUser().getIdentification();
 
+        System.out.println(userId);
+        System.out.println(multipartFile.getOriginalFilename());
+        System.out.println(title);
         String fileName = "user/" + userId + "/" + title  + "/" + multipartFile.getOriginalFilename();
 
         try {
