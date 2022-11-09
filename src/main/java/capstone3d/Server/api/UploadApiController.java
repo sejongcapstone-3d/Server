@@ -22,6 +22,9 @@ public class UploadApiController {
 
     @PostMapping("/upload")
     public String uploadFile(FileDto fileDto, Principal principal) throws IOException {
+        System.out.println("fileDto = " + fileDto.getTitle());
+        System.out.println("fileDto = " + fileDto.getFile().getOriginalFilename());
+        System.out.println("principal = " + principal.getName());
         String url = s3UploadService.uploadFile(fileDto.getFile(), principal.getName(), fileDto.getTitle());
 
         return url;
