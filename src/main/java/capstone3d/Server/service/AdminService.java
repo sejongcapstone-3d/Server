@@ -10,6 +10,7 @@ import capstone3d.Server.repository.RoomRepository;
 import capstone3d.Server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class AdminService {
     private final LocationRepository locationRepository;
     private final S3UploadService s3UploadService;
 
+    @Transactional
     public void saveFile(AdminUploadFileDto adminUploadFileDto, String userIdentification) throws IOException {
         User user = userRepository
                 .findByIdentification(userIdentification)

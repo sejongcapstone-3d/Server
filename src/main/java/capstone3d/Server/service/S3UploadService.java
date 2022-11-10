@@ -52,7 +52,7 @@ public class S3UploadService {
 
         for (MultipartFile multipartFile :
                 multipartFiles) {
-            String fileName = "user/" + username + "/" + title + "/" + multipartFile.getOriginalFilename();
+            String fileName = "server/" + username + "/" + title + "/" + multipartFile.getOriginalFilename();
             try {
                 ObjectMetadata metadata = new ObjectMetadata();
                 metadata.setContentType(multipartFile.getContentType());
