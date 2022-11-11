@@ -1,6 +1,7 @@
 package capstone3d.Server.service;
 
 import capstone3d.Server.domain.dto.UserDetails;
+import capstone3d.Server.domain.dto.UserUploadFileDto;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
@@ -24,14 +25,15 @@ public class S3UploadService {
 
     private final AmazonS3 amazonS3;
 
-    public String uploadFile(MultipartFile file, String title) throws IOException {
+    public String uploadFile(UserUploadFileDto userUploadFileDto) throws IOException {
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userId = userDetails.getUser().getIdentification();
 
-        String fileName = "user/" + userId + "/" + title  + "/" + file.getOriginalFilename();
+        String fileName = "user/" + userId + "/" + userUploadFileDto.getTitle()  + "/" + userUploadFileDto.getFile().getOriginalFilename() + "_" + userUploadFileDto.getAddress() + "_" + userUploadFileDto.getLat() + "_" + userUploadFileDto.getLon();
 
         try {
+            MultipartFile file = userUploadFileDto.getFile();
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
             metadata.setContentLength(file.getResource().contentLength());
