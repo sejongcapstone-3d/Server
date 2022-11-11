@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers("/actuator/health").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/upload/**").authenticated()
                 .anyRequest().permitAll()
