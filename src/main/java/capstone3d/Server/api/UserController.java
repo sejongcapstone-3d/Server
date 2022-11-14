@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
@@ -53,9 +55,9 @@ public class UserController {
 
     @PostMapping("/user")
     public String withdraw(
-            @RequestBody String password
+            @RequestBody Map<String, String> passwordMap
     ) {
-        userService.withdraw(password);
+        userService.withdraw(passwordMap.get("password"));
         return "redirect:/";
     }
 }
