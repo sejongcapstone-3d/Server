@@ -8,21 +8,21 @@ import lombok.NoArgsConstructor;
 public class Subject {
 
     private Long id;
-    private String identification;
+    private String email;
     private String nickname;
     private String type;
 
-    private Subject(Long id, String identification, String nickname, String type) {
+    private Subject(Long id, String email, String nickname, String type) {
         this.id = id;
-        this.identification = identification;
+        this.email = email;
         this.nickname = nickname;
         this.type = type;
     }
 
-    public static Subject atk(Long id, String identification, String nickname) {
-        return new Subject(id, identification, nickname, "ATK");
+    public static Subject atk(Long id, String email, String nickname) {
+        return new Subject(id, email, nickname, "ATK");
     }
-    public static Subject rtk(Long id, String identification, String nickname) {
-        return new Subject(id, identification, nickname, "RTK");
+    public static Subject rtk(Long id, String email, String nickname) {
+        return new Subject(id, email, nickname, "RTK");
     }
 }

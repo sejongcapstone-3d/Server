@@ -19,12 +19,10 @@ public class User {
     private Long id;
 
     @Column(unique = true)
-    private String identification;
+    private String email;
 
     @JsonIgnore
     private String password;
-
-    private String name;
 
     @Column(unique = true)
     private String nickname;

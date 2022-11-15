@@ -12,7 +12,7 @@ public class AdminUploadFileDto {
 
     private List<MultipartFile> files;
 
-    private String userIdentification;
+    private String userEmail;
 
     private double lat;
 

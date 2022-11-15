@@ -26,11 +26,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisDao redisDao;
+    private final S3UploadService s3UploadService;
 
     @Transactional
     public UserResponse singUp(SignUpRequest signUpRequest) {
         boolean isExistId = userRepository
-                .existsByIdentification(signUpRequest.getIdentification());
+                .existsByEmail(signUpRequest.getEmail());
 
         boolean isExistNickname = userRepository
                 .existsByNickname(signUpRequest.getNickname());
@@ -41,19 +42,17 @@ public class UserService {
         String encodePassword = passwordEncoder.encode(signUpRequest.getPassword());
 
         User user;
-        if (signUpRequest.getIdentification().equals("master")) {
-            user = User.builder().identification(signUpRequest.getIdentification())
+        if (signUpRequest.getEmail().equals("admin@admin.com")) {
+            user = User.builder().email(signUpRequest.getEmail())
                     .password(encodePassword)
-                    .name(signUpRequest.getName())
                     .nickname(signUpRequest.getNickname())
                     .phone(signUpRequest.getPhone())
                     .business_name(signUpRequest.getBusiness_name())
                     .role(ROLE_ADMIN)
                     .build();
         } else {
-            user = User.builder().identification(signUpRequest.getIdentification())
+            user = User.builder().email(signUpRequest.getEmail())
                     .password(encodePassword)
-                    .name(signUpRequest.getName())
                     .nickname(signUpRequest.getNickname())
                     .phone(signUpRequest.getPhone())
                     .business_name(signUpRequest.getBusiness_name())
@@ -68,7 +67,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponse login(LoginRequest loginRequest) {
         User user = userRepository
-                .findByIdentification(loginRequest.getIdentification())
+                .findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new BadRequestException("아이디 혹은 비밀번호를 확인하세요."));
 
 
@@ -82,9 +81,9 @@ public class UserService {
     @Transactional
     public UpdateResponse update(UpdateRequest updateRequest) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String userId = userDetails.getUser().getIdentification();
+        String userId = userDetails.getUser().getEmail();
         User user = userRepository
-                .findByIdentification(userId)
+                .findByEmail(userId)
                 .orElseThrow(() -> new BadRequestException("회원이 존재하지 않습니다."));
 
         if (updateRequest.getBusiness_name() != null && !updateRequest.getBusiness_name().equals("")) {
@@ -108,9 +107,9 @@ public class UserService {
     @Transactional
     public void withdraw(String password) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String userId = userDetails.getUser().getIdentification();
+        String userId = userDetails.getUser().getEmail();
         User user = userRepository
-                .findByIdentification(userId)
+                .findByEmail(userId)
                 .orElseThrow(() -> new BadRequestException("회원이 존재하지 않습니다."));
 
         boolean matches = passwordEncoder.matches(

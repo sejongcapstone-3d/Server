@@ -11,10 +11,10 @@ public class UserDetails extends org.springframework.security.core.userdetails.U
     private final User user;
 
     public UserDetails(User user) {
-        super(user.getIdentification(), user.getPassword(), List.of(new GrantedAuthority() {
+        super(user.getEmail(), user.getPassword(), List.of(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                if (user.getIdentification().equals("master")) {
+                if (user.getEmail().equals("admin@admin.com")) {
                     return "ROLE_ADMIN";
                 } else return "ROLE_USER";
             }

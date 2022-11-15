@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (subject.getType().equals("RTK") && !requestURI.equals("/reissue")) {
                     throw new JwtException("토큰을 확인하세요.");
                 }
-                UserDetails userDetails = userDetailsService.loadUserByUsername(subject.getIdentification());
+                UserDetails userDetails = userDetailsService.loadUserByUsername(subject.getEmail());
                 Authentication token = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(token);
             } catch (JwtException e) {

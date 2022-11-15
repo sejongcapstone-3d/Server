@@ -26,13 +26,13 @@ public class AdminService {
     private final S3UploadService s3UploadService;
 
     @Transactional
-    public void saveFile(AdminUploadFileDto adminUploadFileDto, String userIdentification) throws IOException {
+    public void saveFile(AdminUploadFileDto adminUploadFileDto, String userEmail) throws IOException {
         User user = userRepository
-                .findByIdentification(userIdentification)
+                .findByEmail(userEmail)
                 .orElseThrow(() -> new BadRequestException("회원이 존재하지 않습니다."));
 
         Map<String, String> urls = new HashMap<>();
-        urls = s3UploadService.uploadFiles(adminUploadFileDto.getFiles(), userIdentification, adminUploadFileDto.getTitle());
+        urls = s3UploadService.uploadFiles(adminUploadFileDto.getFiles(), userEmail, adminUploadFileDto.getTitle());
 
         Room room = new Room();
         room.setUser(user);

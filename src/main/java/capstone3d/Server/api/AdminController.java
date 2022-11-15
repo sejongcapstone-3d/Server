@@ -19,7 +19,7 @@ public class AdminController {
     @PostMapping("/admin/upload")
     public String uploadFile(AdminUploadFileDto adminUploadFileDto) throws IOException {
 
-        adminService.saveFile(adminUploadFileDto, adminUploadFileDto.getUserIdentification());
+        adminService.saveFile(adminUploadFileDto, adminUploadFileDto.getUserEmail());
 
         return "adminUpload";
     }

@@ -50,16 +50,16 @@ public class JwtTokenProvider {
     public TokenResponse createTokensByLogin(UserResponse userResponse) throws JsonProcessingException {
         Subject atkSubject = Subject.atk(
                 userResponse.getId(),
-                userResponse.getIdentification(),
+                userResponse.getEmail(),
                 userResponse.getNickname());
         Subject rtkSubject = Subject.rtk(
                 userResponse.getId(),
-                userResponse.getIdentification(),
+                userResponse.getEmail(),
                 userResponse.getNickname());
 
         String atk = createToken(atkSubject, atkLive);
         String rtk = createToken(rtkSubject, rtkLive);
-        redisDao.setValues(userResponse.getIdentification(), rtk, Duration.ofMillis(rtkLive));
+        redisDao.setValues(userResponse.getEmail(), rtk, Duration.ofMillis(rtkLive));
         return new TokenResponse(atk, rtk);
     }
 
@@ -82,11 +82,11 @@ public class JwtTokenProvider {
     }
 
     public TokenResponse reissueAtk(UserResponse userResponse) throws JsonProcessingException {
-        String rtkInRedis = redisDao.getValues(userResponse.getIdentification());
+        String rtkInRedis = redisDao.getValues(userResponse.getEmail());
         if(Objects.isNull(rtkInRedis)) throw new ForbiddenException("인증 정보가 만료되었습니다.");
         Subject atkSubject = Subject.atk(
                 userResponse.getId(),
-                userResponse.getIdentification(),
+                userResponse.getEmail(),
                 userResponse.getNickname());
         String atk = createToken(atkSubject, atkLive);
         return new TokenResponse(atk, null);
