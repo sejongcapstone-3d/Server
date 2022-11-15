@@ -50,15 +50,13 @@ public class AdminService {
         room.setFull_room_url(urls.get("full"));
         room.setEmpty_room_url(urls.get("empty"));
 
-        roomRepository.save(room);
-
         Location location = new Location();
-        location.setRoom(room);
         location.setLat(adminUploadFileDto.getLat());
         location.setLon(adminUploadFileDto.getLon());
         location.setAddress(adminUploadFileDto.getAddress());
-
         locationRepository.save(location);
 
+        room.setLocation(location);
+        roomRepository.save(room);
     }
 }

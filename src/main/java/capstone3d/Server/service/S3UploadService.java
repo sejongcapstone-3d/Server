@@ -73,7 +73,7 @@ public class S3UploadService {
             }
 
             int pos = multipartFile.getOriginalFilename().lastIndexOf('.');
-            switch (multipartFile.getOriginalFilename().substring(pos+1, multipartFile.getOriginalFilename().length())) {
+            switch (multipartFile.getOriginalFilename().substring(pos+1)) {
                 case "png":
                     urls.put("png", amazonS3.getUrl(bucket, fileName).toString());
                     break;

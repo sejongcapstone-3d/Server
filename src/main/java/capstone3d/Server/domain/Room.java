@@ -34,4 +34,8 @@ public class Room {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "location_id")
+    private Location location;
 }

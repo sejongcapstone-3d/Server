@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -16,6 +17,10 @@ public class RoomRepository {
         return em.createQuery("select r from Room r where r.id = :id", Room.class)
                 .setParameter("id", id)
                 .getSingleResult();
+    }
+
+    public List<Room> findAll() {
+        return em.createQuery("select r from Room r", Room.class).getResultList();
     }
 
     public void save(Room room) {

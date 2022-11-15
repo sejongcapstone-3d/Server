@@ -15,10 +15,6 @@ public class Location {
     @Column(name = "location_id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "room_id")
-    private Room room;
-
     private Double lat;
 
     private Double lon;
