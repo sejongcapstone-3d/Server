@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,9 +105,9 @@ public class S3UploadService {
         String userId = user.getEmail();
 
         for (Room room : room_list) {
-            String img = room.getRoom_img_url();
-            String full = room.getFull_room_url();
-            String empty = room.getEmpty_room_url();
+            String img = URLDecoder.decode(room.getRoom_img_url(), Charset.forName("UTF-8"));
+            String full = URLDecoder.decode(room.getFull_room_url(), Charset.forName("UTF-8"));
+            String empty = URLDecoder.decode(room.getEmpty_room_url(), Charset.forName("UTF-8"));
 
             try {
                 amazonS3.deleteObject(bucket, img.substring(49));
