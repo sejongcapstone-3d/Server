@@ -30,7 +30,11 @@ public class S3UploadService {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userId = userDetails.getUser().getIdentification();
 
-        String fileName = "user/" + userId + "/" + userUploadFileDto.getTitle()  + "/" + userUploadFileDto.getFile().getOriginalFilename() + "_" + userUploadFileDto.getAddress() + "_" + userUploadFileDto.getLat() + "_" + userUploadFileDto.getLon();
+        int pos = userUploadFileDto.getFile().getOriginalFilename().lastIndexOf('.');
+        String extension = userUploadFileDto.getFile().getOriginalFilename().substring(pos+1);
+        String fileName = "user/" + userId + "/" + userUploadFileDto.getTitle()  + "/"
+                + userUploadFileDto.getFile().getOriginalFilename().substring(0, pos)
+                + "_" + userUploadFileDto.getAddress() + "_" + userUploadFileDto.getLat() + "_" + userUploadFileDto.getLon() + "." + extension;
 
         try {
             MultipartFile file = userUploadFileDto.getFile();
