@@ -1,5 +1,7 @@
 package capstone3d.Server.service;
 
+import capstone3d.Server.domain.Room;
+import capstone3d.Server.domain.User;
 import capstone3d.Server.domain.dto.UserDetails;
 import capstone3d.Server.domain.dto.UserUploadFileDto;
 import com.amazonaws.AmazonServiceException;
@@ -28,7 +30,7 @@ public class S3UploadService {
     public String uploadFile(UserUploadFileDto userUploadFileDto) throws IOException {
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String userId = userDetails.getUser().getIdentification();
+        String userId = userDetails.getUser().getEmail();
 
         int pos = userUploadFileDto.getFile().getOriginalFilename().lastIndexOf('.');
         String extension = userUploadFileDto.getFile().getOriginalFilename().substring(pos+1);
@@ -94,5 +96,26 @@ public class S3UploadService {
         }
 
         return urls;
+    }
+
+    public void deleteFiles(User user) {
+        List<Room> room_list = user.getRoom_list();
+        String userId = user.getEmail();
+
+        for (Room room : room_list) {
+            String img = room.getRoom_img_url();
+            String full = room.getFull_room_url();
+            String empty = room.getEmpty_room_url();
+
+            try {
+                amazonS3.deleteObject(bucket, img.substring(49));
+                amazonS3.deleteObject(bucket, full.substring(49));
+                amazonS3.deleteObject(bucket, empty.substring(49));
+            } catch (AmazonServiceException e) {
+                e.printStackTrace();
+            } catch (SdkClientException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
