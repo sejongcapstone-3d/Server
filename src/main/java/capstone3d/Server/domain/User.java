@@ -34,11 +34,11 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Room> room_list = new ArrayList<>();
-
-
+    
     /*회원수정 메소드*/
 
     public void updateNickName(String nickName) {
@@ -52,6 +52,4 @@ public class User {
     public void updatePassword(String password) {
         this.password = password;
     }
-
-
 }
