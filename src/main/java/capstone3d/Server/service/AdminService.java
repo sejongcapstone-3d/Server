@@ -8,6 +8,7 @@ import capstone3d.Server.exception.BadRequestException;
 import capstone3d.Server.repository.LocationRepository;
 import capstone3d.Server.repository.RoomRepository;
 import capstone3d.Server.repository.UserRepository;
+import capstone3d.Server.response.StatusMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,7 @@ public class AdminService {
     public void saveFile(AdminUploadFileDto adminUploadFileDto, String userEmail) throws IOException {
         User user = userRepository
                 .findByEmail(userEmail)
-                .orElseThrow(() -> new BadRequestException("회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new BadRequestException(StatusMessage.Not_Found_User));
 
         Map<String, String> urls = new HashMap<>();
         urls = s3UploadService.uploadFiles(adminUploadFileDto.getFiles(), userEmail, adminUploadFileDto.getTitle());

@@ -1,6 +1,6 @@
 package capstone3d.Server.exception;
 
-import org.springframework.http.HttpStatus;
+import capstone3d.Server.response.AllResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<Message> handle(BadRequestException e) {
-        Message message = new Message(e.getMessage(), HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<AllResponse> handle(BadRequestException e) {
+        return AllResponse.ErrorResponseEntity(e.getStatusMessage());
     }
 }

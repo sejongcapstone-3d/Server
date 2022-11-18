@@ -10,6 +10,7 @@ import capstone3d.Server.domain.dto.response.UserResponse;
 import capstone3d.Server.domain.User;
 import capstone3d.Server.exception.BadRequestException;
 import capstone3d.Server.repository.UserRepository;
+import capstone3d.Server.response.StatusMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,8 +37,8 @@ public class UserService {
         boolean isExistNickname = userRepository
                 .existsByNickname(signUpRequest.getNickname());
 
-        if (isExistId) throw new BadRequestException("이미 존재하는 아이디입니다.");
-        if (isExistNickname) throw new BadRequestException("이미 존재하는 닉네임입니다.");
+        if (isExistId) throw new BadRequestException(StatusMessage.Email_Duplicated);
+        if (isExistNickname) throw new BadRequestException(StatusMessage.Nickname_Duplicated);
 
         String encodePassword = passwordEncoder.encode(signUpRequest.getPassword());
 
@@ -68,13 +69,13 @@ public class UserService {
     public UserResponse login(LoginRequest loginRequest) {
         User user = userRepository
                 .findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new BadRequestException("아이디 혹은 비밀번호를 확인하세요."));
+                .orElseThrow(() -> new BadRequestException(StatusMessage.Login_Fail));
 
 
         boolean matches = passwordEncoder.matches(
                 loginRequest.getPassword(),
                 user.getPassword());
-        if (!matches) throw new BadRequestException("아이디 혹은 비밀번호를 확인하세요.");
+        if (!matches) throw new BadRequestException(StatusMessage.Login_Fail);
         return UserResponse.of(user);
     }
 
@@ -84,7 +85,7 @@ public class UserService {
         String userId = userDetails.getUser().getEmail();
         User user = userRepository
                 .findByEmail(userId)
-                .orElseThrow(() -> new BadRequestException("회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new BadRequestException(StatusMessage.Not_Found_User));
 
         if (updateRequest.getBusiness_name() != null && !updateRequest.getBusiness_name().equals("")) {
             user.updateBusiness_name(updateRequest.getBusiness_name());
@@ -96,7 +97,7 @@ public class UserService {
         if (updateRequest.getNickname() != null && !updateRequest.getNickname().equals("")) {
             boolean isExistNickname = userRepository
                     .existsByNickname(updateRequest.getNickname());
-            if (isExistNickname) throw new BadRequestException("이미 존재하는 닉네임입니다.");
+            if (isExistNickname) throw new BadRequestException(StatusMessage.Email_Duplicated);
 
             user.updateNickName(updateRequest.getNickname());
         }
@@ -110,13 +111,13 @@ public class UserService {
         String userId = userDetails.getUser().getEmail();
         User user = userRepository
                 .findByEmail(userId)
-                .orElseThrow(() -> new BadRequestException("회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new BadRequestException(StatusMessage.Not_Found_User));
 
         boolean matches = passwordEncoder.matches(
                 password,
                 user.getPassword());
 
-        if (!matches) throw new BadRequestException("아이디 혹은 비밀번호를 확인하세요.");
+        if (!matches) throw new BadRequestException(StatusMessage.Login_Fail);
 
         s3UploadService.deleteFiles(user);
         redisDao.deleteValues(userId);

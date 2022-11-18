@@ -1,7 +1,9 @@
 package capstone3d.Server.api;
 
 import capstone3d.Server.domain.Room;
+import capstone3d.Server.response.AllResponse;
 import capstone3d.Server.repository.RoomRepository;
+import capstone3d.Server.response.StatusMessage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +22,17 @@ public class RoomListApiController {
     private final RoomRepository roomRepository;
 
     @GetMapping("/room")
-    public List<RoomDto> locationList() {
+    public AllResponse locationList() {
         List<Room> rooms = roomRepository.findAll();
         List<RoomDto> collect = rooms.stream()
                 .map(r -> new RoomDto(r, r.getLocation().getLat(), r.getLocation().getLon(), r.getUser().getBusiness_name(), r.getUser().getPhone(), r.getLocation().getAddress()))
                 .collect(Collectors.toList());
-        return collect;
+
+        if (rooms.isEmpty()) {
+            return new AllResponse(StatusMessage.Get_RoomList.getStatus(), StatusMessage.Get_RoomList_Fail.getMessage(), rooms.size(), collect);
+        } else {
+            return new AllResponse(StatusMessage.Get_RoomList.getStatus(), StatusMessage.Get_RoomList.getMessage(), rooms.size(), collect);
+        }
     }
 
     @Data

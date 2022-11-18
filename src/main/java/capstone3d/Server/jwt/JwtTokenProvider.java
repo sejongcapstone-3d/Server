@@ -4,7 +4,8 @@ import capstone3d.Server.domain.dao.RedisDao;
 import capstone3d.Server.domain.dto.Subject;
 import capstone3d.Server.domain.dto.response.TokenResponse;
 import capstone3d.Server.domain.dto.response.UserResponse;
-import capstone3d.Server.exception.ForbiddenException;
+import capstone3d.Server.exception.BadRequestException;
+import capstone3d.Server.response.StatusMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
@@ -42,9 +43,7 @@ public class JwtTokenProvider {
 
     @PostConstruct
     protected void init() {
-//        key = Base64.getEncoder().encodeToString(key.getBytes());
         key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
-//        key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     public TokenResponse createTokensByLogin(UserResponse userResponse) throws JsonProcessingException {
@@ -83,7 +82,7 @@ public class JwtTokenProvider {
 
     public TokenResponse reissueAtk(UserResponse userResponse) throws JsonProcessingException {
         String rtkInRedis = redisDao.getValues(userResponse.getEmail());
-        if(Objects.isNull(rtkInRedis)) throw new ForbiddenException("인증 정보가 만료되었습니다.");
+        if(Objects.isNull(rtkInRedis)) throw new BadRequestException(StatusMessage.Refresh_Token_Unauthorized);
         Subject atkSubject = Subject.atk(
                 userResponse.getId(),
                 userResponse.getEmail(),

@@ -2,7 +2,9 @@ package capstone3d.Server.api;
 
 import capstone3d.Server.domain.Room;
 import capstone3d.Server.domain.User;
+import capstone3d.Server.exception.BadRequestException;
 import capstone3d.Server.repository.RoomRepository;
+import capstone3d.Server.response.StatusMessage;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,7 +21,9 @@ public class RoomApiController {
 
     @GetMapping("/room/{id}")
     public RoomUrlDto RoomUrl(@PathVariable("id") Long id) {
-        Room findRoom = roomRepository.findById(id);
+        Room findRoom = roomRepository
+                .findById(id)
+                .orElseThrow(()-> new BadRequestException(StatusMessage.Not_Found_Room));
         User user = findRoom.getUser();
         String business_name = user.getBusiness_name();
         String phone = user.getPhone();

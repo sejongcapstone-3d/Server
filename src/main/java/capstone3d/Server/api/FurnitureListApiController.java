@@ -2,6 +2,8 @@ package capstone3d.Server.api;
 
 import capstone3d.Server.domain.Furniture;
 import capstone3d.Server.repository.FurnitureRepository;
+import capstone3d.Server.response.AllResponse;
+import capstone3d.Server.response.StatusMessage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +22,16 @@ public class FurnitureListApiController {
     private final FurnitureRepository furnitureRepository;
 
     @GetMapping("/furniture")
-    public List<FurnitureDto> furnitureList() {
+    public AllResponse<FurnitureDto> furnitureList() {
         List<Furniture> furniture = furnitureRepository.findAll();
         List<FurnitureDto> collect = furniture.stream()
                 .map(f -> new FurnitureDto(f.getCategory(), f.getFurniture_url(), f.getFurniture_img_url(), f.getFurniture_width(), f.getFurniture_height(), f.getFurniture_depth()))
                 .collect(Collectors.toList());
-        return collect;
+        if (furniture.isEmpty()) {
+            return new AllResponse(StatusMessage.Get_FurnitureList_Fail.getStatus(), StatusMessage.Get_FurnitureList_Fail.getMessage(), furniture.size(), collect);
+        } else {
+            return new AllResponse(StatusMessage.Get_FurnitureList.getStatus(), StatusMessage.Get_FurnitureList.getMessage(), furniture.size(), collect);
+        }
     }
 
     @Data
