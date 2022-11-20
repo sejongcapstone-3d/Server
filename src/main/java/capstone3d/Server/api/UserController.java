@@ -5,6 +5,7 @@ import capstone3d.Server.domain.dto.request.LoginRequest;
 import capstone3d.Server.domain.dto.request.SignUpRequest;
 import capstone3d.Server.domain.dto.request.UpdateRequest;
 import capstone3d.Server.domain.dto.response.UserResponse;
+import capstone3d.Server.exception.BadRequestException;
 import capstone3d.Server.jwt.JwtTokenProvider;
 import capstone3d.Server.response.AllResponse;
 import capstone3d.Server.response.StatusMessage;
@@ -15,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,6 +44,7 @@ public class UserController {
     public AllResponse reissue(
             @AuthenticationPrincipal UserDetails userDetails
     ) throws JsonProcessingException {
+        if(Objects.isNull(userDetails)) throw new BadRequestException(StatusMessage.Refresh_Token_Unauthorized);
         UserResponse userResponse = UserResponse.of(userDetails.getUser());
         return new AllResponse(StatusMessage.Reissue_Token_Success.getStatus(), StatusMessage.Reissue_Token_Success.getMessage(), 0, jwtTokenProvider.reissueAtk(userResponse));
     }
@@ -55,8 +58,10 @@ public class UserController {
 
     @PostMapping("/user")
     public AllResponse withdraw(
+            @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody Map<String, String> passwordMap
     ) {
+        if(Objects.isNull(userDetails)) throw new BadRequestException(StatusMessage.Unauthorized);
         userService.withdraw(passwordMap.get("password"));
         return new AllResponse(StatusMessage.Withdraw_Success.getStatus(), StatusMessage.Withdraw_Success.getMessage(), 0, null);
     }

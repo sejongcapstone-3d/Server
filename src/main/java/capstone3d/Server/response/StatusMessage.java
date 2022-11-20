@@ -15,8 +15,10 @@ public enum StatusMessage {
     Email_Duplicated(406,"이미 존재하는 아이디입니다."),
     Nickname_Duplicated(407,"이미 존재하는 닉네임입니다."),
     Login_Fail(405,"아이디 혹은 비밀번호를 확인해주세요."),
+    Not_Match_Password(408,"비밀번호가 일치하지 않습니다."),
     Unauthorized(401,"토큰 인증에 실패하였습니다."),
-    Refresh_Token_Unauthorized(402,"토큰 인증에 실패하였습니다."),
+    Refresh_Token_Unauthorized(402,"Refresh 토큰 인증에 실패하였습니다."),
+    Forbidden(403, "권한이 없습니다."),
     Not_Found_User(404,"회원이 존재하지 않습니다."),
     Not_Found_Room(404,"해당 방을 찾을 수 없습니다.");
 

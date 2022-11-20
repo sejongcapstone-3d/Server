@@ -117,7 +117,7 @@ public class UserService {
                 password,
                 user.getPassword());
 
-        if (!matches) throw new BadRequestException(StatusMessage.Login_Fail);
+        if (!matches) throw new BadRequestException(StatusMessage.Not_Match_Password);
 
         s3UploadService.deleteFiles(user);
         redisDao.deleteValues(userId);
