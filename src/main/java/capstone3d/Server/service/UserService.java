@@ -39,6 +39,10 @@ public class UserService {
 
         if (isExistId) throw new BadRequestException(StatusMessage.Email_Duplicated);
         if (isExistNickname) throw new BadRequestException(StatusMessage.Nickname_Duplicated);
+        if (signUpRequest.getBusiness_name() == null || signUpRequest.getNickname() == null ||
+                signUpRequest.getPassword() == null || signUpRequest.getPhone() == null || signUpRequest.getEmail() == null) {
+            throw new BadRequestException(StatusMessage.SignUp_Request_Error);
+        }
 
         String encodePassword = passwordEncoder.encode(signUpRequest.getPassword());
 
@@ -70,7 +74,6 @@ public class UserService {
         User user = userRepository
                 .findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new BadRequestException(StatusMessage.Login_Fail));
-
 
         boolean matches = passwordEncoder.matches(
                 loginRequest.getPassword(),
