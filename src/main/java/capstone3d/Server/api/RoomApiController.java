@@ -4,6 +4,7 @@ import capstone3d.Server.domain.Room;
 import capstone3d.Server.domain.User;
 import capstone3d.Server.exception.BadRequestException;
 import capstone3d.Server.repository.RoomRepository;
+import capstone3d.Server.response.AllResponse;
 import capstone3d.Server.response.StatusMessage;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +21,14 @@ public class RoomApiController {
     private final RoomRepository roomRepository;
 
     @GetMapping("/room/{id}")
-    public RoomUrlDto RoomUrl(@PathVariable("id") Long id) {
+    public AllResponse RoomUrl(@PathVariable("id") Long id) {
         Room findRoom = roomRepository
                 .findById(id)
                 .orElseThrow(()-> new BadRequestException(StatusMessage.Not_Found_Room));
         User user = findRoom.getUser();
         String business_name = user.getBusiness_name();
         String phone = user.getPhone();
-        return new RoomUrlDto(findRoom.getName(), findRoom.getEmpty_room_url(), findRoom.getFull_room_url(), findRoom.getRoom_img_url(), findRoom.getRoom_width(), findRoom.getRoom_height(), findRoom.getRoom_depth(), business_name, phone);
+        return new AllResponse(StatusMessage.Get_Room.getStatus(), StatusMessage.Get_Room.getMessage(), 1, new RoomUrlDto(findRoom.getName(), findRoom.getEmpty_room_url(), findRoom.getFull_room_url(), findRoom.getRoom_img_url(), findRoom.getRoom_width(), findRoom.getRoom_height(), findRoom.getRoom_depth(), business_name, phone));
     }
 
     @Data

@@ -37,7 +37,7 @@ public class UserController {
             @RequestBody LoginRequest loginRequest
     ) throws JsonProcessingException {
         UserResponse userResponse = userService.login(loginRequest);
-        return new AllResponse(StatusMessage.Login_Success.getStatus(), StatusMessage.Login_Success.getMessage(), 0, jwtTokenProvider.createTokensByLogin(userResponse));
+        return new AllResponse(StatusMessage.Login_Success.getStatus(), StatusMessage.Login_Success.getMessage(), 1, jwtTokenProvider.createTokensByLogin(userResponse));
     }
 
     @GetMapping("/reissue")
@@ -46,14 +46,14 @@ public class UserController {
     ) throws JsonProcessingException {
         if(Objects.isNull(userDetails)) throw new BadRequestException(StatusMessage.Refresh_Token_Unauthorized);
         UserResponse userResponse = UserResponse.of(userDetails.getUser());
-        return new AllResponse(StatusMessage.Reissue_Token_Success.getStatus(), StatusMessage.Reissue_Token_Success.getMessage(), 0, jwtTokenProvider.reissueAtk(userResponse));
+        return new AllResponse(StatusMessage.Reissue_Token_Success.getStatus(), StatusMessage.Reissue_Token_Success.getMessage(), 1, jwtTokenProvider.reissueAtk(userResponse));
     }
 
     @PutMapping("/user")
     public AllResponse update(
             @RequestBody UpdateRequest updateRequest
             ) {
-        return new AllResponse(StatusMessage.Update_Success.getStatus(), StatusMessage.Update_Success.getMessage(), 0, userService.update(updateRequest));
+        return new AllResponse(StatusMessage.Update_Success.getStatus(), StatusMessage.Update_Success.getMessage(), 1, userService.update(updateRequest));
     }
 
     @PostMapping("/user")

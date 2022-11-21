@@ -97,7 +97,7 @@ public class UserService {
         if (updateRequest.getNickname() != null && !updateRequest.getNickname().equals("")) {
             boolean isExistNickname = userRepository
                     .existsByNickname(updateRequest.getNickname());
-            if (isExistNickname) throw new BadRequestException(StatusMessage.Email_Duplicated);
+            if (isExistNickname) throw new BadRequestException(StatusMessage.Nickname_Duplicated);
 
             user.updateNickName(updateRequest.getNickname());
         }
