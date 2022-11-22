@@ -53,7 +53,7 @@ public class UserController {
         UserResponse userResponse = UserResponse.of(userDetails.getUser());
         TokenResponse tokenResponse = jwtTokenProvider.reissueAtk(userResponse);
         response.addHeader("atk", tokenResponse.getAtk());
-        return new AllResponse(StatusMessage.Reissue_Token_Success.getStatus(), StatusMessage.Reissue_Token_Success.getMessage(), 1, userResponse);
+        return new AllResponse(StatusMessage.Reissue_Token_Success.getStatus(), StatusMessage.Reissue_Token_Success.getMessage(), 0, null);
     }
 
     @PutMapping("/user")
