@@ -4,6 +4,7 @@ import capstone3d.Server.domain.dto.UserDetails;
 import capstone3d.Server.domain.dto.request.LoginRequest;
 import capstone3d.Server.domain.dto.request.SignUpRequest;
 import capstone3d.Server.domain.dto.request.UpdateRequest;
+import capstone3d.Server.domain.dto.response.UserLoginResponse;
 import capstone3d.Server.domain.dto.response.UserResponse;
 import capstone3d.Server.exception.BadRequestException;
 import capstone3d.Server.jwt.JwtTokenProvider;
@@ -37,7 +38,7 @@ public class UserController {
             @RequestBody LoginRequest loginRequest
     ) throws JsonProcessingException {
         UserResponse userResponse = userService.login(loginRequest);
-        return new AllResponse(StatusMessage.Login_Success.getStatus(), StatusMessage.Login_Success.getMessage(), 1, jwtTokenProvider.createTokensByLogin(userResponse));
+        return new AllResponse(StatusMessage.Login_Success.getStatus(), StatusMessage.Login_Success.getMessage(), 1, new UserLoginResponse(jwtTokenProvider.createTokensByLogin(userResponse), userResponse));
     }
 
     @GetMapping("/reissue")

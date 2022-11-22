@@ -10,7 +10,6 @@ public class UserResponse {
 
     private final String email;
 
-
     private final String nickname;
 
     private final String phone;

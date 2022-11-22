@@ -4,6 +4,9 @@ import capstone3d.Server.domain.Room;
 import capstone3d.Server.domain.User;
 import capstone3d.Server.domain.dto.UserDetails;
 import capstone3d.Server.domain.dto.UserUploadFileDto;
+import capstone3d.Server.exception.BadRequestException;
+import capstone3d.Server.repository.UserRepository;
+import capstone3d.Server.response.StatusMessage;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
@@ -28,11 +31,21 @@ public class S3UploadService {
     private String bucket;
 
     private final AmazonS3 amazonS3;
+    private final UserRepository userRepository;
 
     public String uploadFile(UserUploadFileDto userUploadFileDto) throws IOException {
 
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String userId = userDetails.getUser().getEmail();
+//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        String userId = userDetails.getUser().getEmail();
+
+        /*
+        * 임시적으로 id로 업로드
+        * */
+        long id = userUploadFileDto.getUserId();
+        User user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new BadRequestException(StatusMessage.Not_Found_User));
+        String userId = user.getEmail();
 
         int pos = userUploadFileDto.getFile().getOriginalFilename().lastIndexOf('.');
         String extension = userUploadFileDto.getFile().getOriginalFilename().substring(pos+1);

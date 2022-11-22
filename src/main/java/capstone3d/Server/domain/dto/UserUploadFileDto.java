@@ -5,6 +5,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class UserUploadFileDto {
+    private long userId;
+
     private String title;
 
     private MultipartFile file;
