@@ -25,7 +25,7 @@ public class RoomListApiController {
     public AllResponse locationList() {
         List<Room> rooms = roomRepository.findAll();
         List<RoomDto> collect = rooms.stream()
-                .map(r -> new RoomDto(r, r.getLocation().getLat(), r.getLocation().getLon(), r.getUser().getBusiness_name(), r.getUser().getPhone(), r.getLocation().getAddress()))
+                .map(r -> new RoomDto(r, r.getLocation().getLat(), r.getLocation().getLng(), r.getUser().getBusiness_name(), r.getUser().getPhone(), r.getLocation().getAddress()))
                 .collect(Collectors.toList());
 
         if (rooms.isEmpty()) {
@@ -42,7 +42,7 @@ public class RoomListApiController {
 
         private Double lat;
 
-        private Double lon;
+        private double lng;
 
         private String business_name;
 

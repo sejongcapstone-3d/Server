@@ -35,7 +35,7 @@ public class AdminService {
         if (adminUploadFileDto.getTitle() == null || adminUploadFileDto.getAddress() == null ||
                 adminUploadFileDto.getRoom_width() == 0 || adminUploadFileDto.getRoom_height() == 0 ||
                 adminUploadFileDto.getRoom_depth() == 0 || adminUploadFileDto.getLat() == 0.0 ||
-                adminUploadFileDto.getLon() == 0.0) {
+                adminUploadFileDto.getLng() == 0.0) {
             throw new BadRequestException(StatusMessage.Admin_Upload_Error);
         }
 
@@ -60,7 +60,7 @@ public class AdminService {
 
         Location location = new Location();
         location.setLat(adminUploadFileDto.getLat());
-        location.setLon(adminUploadFileDto.getLon());
+        location.setLng(adminUploadFileDto.getLng());
         location.setAddress(adminUploadFileDto.getAddress());
         locationRepository.save(location);
 

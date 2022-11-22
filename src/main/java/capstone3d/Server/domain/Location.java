@@ -17,7 +17,7 @@ public class Location {
 
     private Double lat;
 
-    private Double lon;
+    private double lng;
 
     private String address;
 }

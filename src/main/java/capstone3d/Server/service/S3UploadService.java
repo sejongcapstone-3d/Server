@@ -47,7 +47,7 @@ public class S3UploadService {
                 .orElseThrow(() -> new BadRequestException(StatusMessage.Not_Found_User));
         String userId = user.getEmail();
         if (userUploadFileDto.getTitle() == null || userUploadFileDto.getAddress() == null ||
-                userUploadFileDto.getLat() == 0.0 || userUploadFileDto.getLon() == 0.0) {
+                userUploadFileDto.getLat() == 0.0 || userUploadFileDto.getLng() == 0.0) {
             throw new BadRequestException(StatusMessage.Upload_Error);
         }
         int pos = userUploadFileDto.getFile().getOriginalFilename().lastIndexOf('.');
@@ -55,7 +55,7 @@ public class S3UploadService {
         if (!extension.equals("pts")) throw new BadRequestException(StatusMessage.UploadFile_format_Error);
         String fileName = "user/" + userId + "/" + userUploadFileDto.getTitle() + "/"
                 + userUploadFileDto.getFile().getOriginalFilename().substring(0, pos)
-                + "_" + userUploadFileDto.getAddress() + "_" + userUploadFileDto.getLat() + "_" + userUploadFileDto.getLon() + "." + extension;
+                + "_" + userUploadFileDto.getAddress() + "_" + userUploadFileDto.getLat() + "_" + userUploadFileDto.getLng() + "." + extension;
 
         try {
             MultipartFile file = userUploadFileDto.getFile();

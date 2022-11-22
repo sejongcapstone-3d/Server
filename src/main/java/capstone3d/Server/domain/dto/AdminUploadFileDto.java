@@ -16,7 +16,7 @@ public class AdminUploadFileDto {
 
     private double lat;
 
-    private double lon;
+    private double lng;
 
     private int room_width;
 

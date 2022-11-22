@@ -11,9 +11,11 @@ public class UserUploadFileDto {
 
     private MultipartFile file;
 
+    private MultipartFile img;
+
     private String address;
 
     private double lat;
 
-    private double lon;
+    private double lng;
 }
