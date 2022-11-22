@@ -29,7 +29,7 @@ public class RoomListApiController {
                 .collect(Collectors.toList());
 
         if (rooms.isEmpty()) {
-            return new AllResponse(StatusMessage.Get_RoomList.getStatus(), StatusMessage.Get_RoomList_Fail.getMessage(), rooms.size(), collect);
+            return new AllResponse(StatusMessage.Get_RoomList_Fail.getStatus(), StatusMessage.Get_RoomList_Fail.getMessage(), rooms.size(), collect);
         } else {
             return new AllResponse(StatusMessage.Get_RoomList.getStatus(), StatusMessage.Get_RoomList.getMessage(), rooms.size(), collect);
         }
