@@ -4,7 +4,7 @@ import capstone3d.Server.domain.dto.UserDetails;
 import capstone3d.Server.domain.dto.request.LoginRequest;
 import capstone3d.Server.domain.dto.request.SignUpRequest;
 import capstone3d.Server.domain.dto.request.UpdateRequest;
-import capstone3d.Server.domain.dto.response.UserLoginResponse;
+import capstone3d.Server.domain.dto.response.TokenResponse;
 import capstone3d.Server.domain.dto.response.UserResponse;
 import capstone3d.Server.exception.BadRequestException;
 import capstone3d.Server.jwt.JwtTokenProvider;
@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Objects;
 
@@ -30,30 +31,35 @@ public class UserController {
     public AllResponse singUp(
             @RequestBody SignUpRequest signUpRequest
     ) {
-        return new AllResponse(StatusMessage.Sign_Up_Success.getStatus(),StatusMessage.Sign_Up_Success.getMessage(), 1, userService.singUp(signUpRequest));
+        return new AllResponse(StatusMessage.Sign_Up_Success.getStatus(), StatusMessage.Sign_Up_Success.getMessage(), 1, userService.singUp(signUpRequest));
     }
 
     @PostMapping("/login")
     public AllResponse login(
-            @RequestBody LoginRequest loginRequest
+            @RequestBody LoginRequest loginRequest, HttpServletResponse response
     ) throws JsonProcessingException {
         UserResponse userResponse = userService.login(loginRequest);
-        return new AllResponse(StatusMessage.Login_Success.getStatus(), StatusMessage.Login_Success.getMessage(), 1, new UserLoginResponse(jwtTokenProvider.createTokensByLogin(userResponse), userResponse));
+        TokenResponse tokenResponse = jwtTokenProvider.createTokensByLogin(userResponse);
+        response.addHeader("atk", tokenResponse.getAtk());
+        response.addHeader("rtk", tokenResponse.getRtk());
+        return new AllResponse(StatusMessage.Login_Success.getStatus(), StatusMessage.Login_Success.getMessage(), 1, userResponse);
     }
 
     @GetMapping("/reissue")
     public AllResponse reissue(
-            @AuthenticationPrincipal UserDetails userDetails
+            @AuthenticationPrincipal UserDetails userDetails, HttpServletResponse response
     ) throws JsonProcessingException {
-        if(Objects.isNull(userDetails)) throw new BadRequestException(StatusMessage.Refresh_Token_Unauthorized);
+        if (Objects.isNull(userDetails)) throw new BadRequestException(StatusMessage.Refresh_Token_Unauthorized);
         UserResponse userResponse = UserResponse.of(userDetails.getUser());
-        return new AllResponse(StatusMessage.Reissue_Token_Success.getStatus(), StatusMessage.Reissue_Token_Success.getMessage(), 1, jwtTokenProvider.reissueAtk(userResponse));
+        TokenResponse tokenResponse = jwtTokenProvider.reissueAtk(userResponse);
+        response.addHeader("atk", tokenResponse.getAtk());
+        return new AllResponse(StatusMessage.Reissue_Token_Success.getStatus(), StatusMessage.Reissue_Token_Success.getMessage(), 1, userResponse);
     }
 
     @PutMapping("/user")
     public AllResponse update(
             @RequestBody UpdateRequest updateRequest
-            ) {
+    ) {
         return new AllResponse(StatusMessage.Update_Success.getStatus(), StatusMessage.Update_Success.getMessage(), 1, userService.update(updateRequest));
     }
 
@@ -62,7 +68,7 @@ public class UserController {
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody Map<String, String> passwordMap
     ) {
-        if(Objects.isNull(userDetails)) throw new BadRequestException(StatusMessage.Unauthorized);
+        if (Objects.isNull(userDetails)) throw new BadRequestException(StatusMessage.Unauthorized);
         userService.withdraw(passwordMap.get("password"));
         return new AllResponse(StatusMessage.Withdraw_Success.getStatus(), StatusMessage.Withdraw_Success.getMessage(), 0, null);
     }
