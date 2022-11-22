@@ -32,6 +32,13 @@ public class AdminService {
                 .findByEmail(userEmail)
                 .orElseThrow(() -> new BadRequestException(StatusMessage.Not_Found_User));
 
+        if (adminUploadFileDto.getTitle() == null || adminUploadFileDto.getAddress() == null ||
+                adminUploadFileDto.getRoom_width() == 0 || adminUploadFileDto.getRoom_height() == 0 ||
+                adminUploadFileDto.getRoom_depth() == 0 || adminUploadFileDto.getLat() == 0.0 ||
+                adminUploadFileDto.getLon() == 0.0) {
+            throw new BadRequestException(StatusMessage.Admin_Upload_Error);
+        }
+
         Map<String, String> urls = new HashMap<>();
         urls = s3UploadService.uploadFiles(adminUploadFileDto.getFiles(), userEmail, adminUploadFileDto.getTitle());
 

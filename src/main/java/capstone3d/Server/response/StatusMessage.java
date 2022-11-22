@@ -23,7 +23,11 @@ public enum StatusMessage {
     Email_Duplicated(406, "이미 존재하는 아이디입니다."),
     Nickname_Duplicated(407, "이미 존재하는 닉네임입니다."),
     Not_Match_Password(408, "비밀번호가 일치하지 않습니다."),
-    SignUp_Request_Error(409, "회원가입 요청 형식이 잘못되었습니다.");
+    SignUp_Request_Error(409, "회원가입 요청 형식이 잘못되었습니다."),
+    UploadFile_format_Error(410, "업로드 파일 형식이 잘못되었습니다."),
+    Upload_Error(411, "업로드 요청 형식이 잘못되었습니다."),
+    Admin_UploadFile_format_Error(412, "괸리자 업로드 파일 형식이 잘못되었습니다."),
+    Admin_Upload_Error(413, "관리자 업로드 요청 형식이 잘못되었습니다.");
 
     private int status;
     private String message;

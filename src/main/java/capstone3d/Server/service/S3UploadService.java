@@ -39,17 +39,21 @@ public class S3UploadService {
 //        String userId = userDetails.getUser().getEmail();
 
         /*
-        * 임시적으로 id로 업로드
-        * */
+         * 임시적으로 id로 업로드
+         * */
         long id = userUploadFileDto.getUserId();
         User user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new BadRequestException(StatusMessage.Not_Found_User));
         String userId = user.getEmail();
-
+        if (userUploadFileDto.getTitle() == null || userUploadFileDto.getAddress() == null ||
+                userUploadFileDto.getLat() == 0.0 || userUploadFileDto.getLon() == 0.0) {
+            throw new BadRequestException(StatusMessage.Upload_Error);
+        }
         int pos = userUploadFileDto.getFile().getOriginalFilename().lastIndexOf('.');
-        String extension = userUploadFileDto.getFile().getOriginalFilename().substring(pos+1);
-        String fileName = "user/" + userId + "/" + userUploadFileDto.getTitle()  + "/"
+        String extension = userUploadFileDto.getFile().getOriginalFilename().substring(pos + 1);
+        if (!extension.equals("pts")) throw new BadRequestException(StatusMessage.UploadFile_format_Error);
+        String fileName = "user/" + userId + "/" + userUploadFileDto.getTitle() + "/"
                 + userUploadFileDto.getFile().getOriginalFilename().substring(0, pos)
                 + "_" + userUploadFileDto.getAddress() + "_" + userUploadFileDto.getLat() + "_" + userUploadFileDto.getLon() + "." + extension;
 
@@ -72,6 +76,7 @@ public class S3UploadService {
 
     public Map<String, String> uploadFiles(List<MultipartFile> multipartFiles, String username, String title) throws IOException {
         Map<String, String> urls = new HashMap<>();
+        int filesNum = multipartFiles.size();
 
         for (MultipartFile multipartFile :
                 multipartFiles) {
@@ -90,24 +95,30 @@ public class S3UploadService {
             }
 
             int pos = multipartFile.getOriginalFilename().lastIndexOf('.');
-            switch (multipartFile.getOriginalFilename().substring(pos+1)) {
+            switch (multipartFile.getOriginalFilename().substring(pos + 1)) {
                 case "png":
                     urls.put("png", amazonS3.getUrl(bucket, fileName).toString());
+                    filesNum--;
                     break;
                 case "jpg":
                     urls.put("jpg", amazonS3.getUrl(bucket, fileName).toString());
+                    filesNum--;
                     break;
                 case "jpeg":
                     urls.put("jpeg", amazonS3.getUrl(bucket, fileName).toString());
+                    filesNum--;
                     break;
                 case "json":
                     if (multipartFile.getOriginalFilename().contains("empty")) {
                         urls.put("empty", amazonS3.getUrl(bucket, fileName).toString());
-                    } else if (multipartFile.getOriginalFilename().contains("full")){
+                        filesNum--;
+                    } else if (multipartFile.getOriginalFilename().contains("full")) {
                         urls.put("full", amazonS3.getUrl(bucket, fileName).toString());
+                        filesNum--;
                     }
                     break;
             }
+            if (filesNum != 0) throw new BadRequestException(StatusMessage.Admin_UploadFile_format_Error);
         }
 
         return urls;
