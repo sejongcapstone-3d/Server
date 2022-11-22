@@ -2,7 +2,6 @@ package capstone3d.Server.service;
 
 import capstone3d.Server.domain.Room;
 import capstone3d.Server.domain.User;
-import capstone3d.Server.domain.dto.UserDetails;
 import capstone3d.Server.domain.dto.UserUploadFileDto;
 import capstone3d.Server.exception.BadRequestException;
 import capstone3d.Server.repository.UserRepository;
@@ -13,13 +12,13 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ public class S3UploadService {
     private final AmazonS3 amazonS3;
     private final UserRepository userRepository;
 
-    public String uploadFile(UserUploadFileDto userUploadFileDto) throws IOException {
+    public List<String> uploadFile(UserUploadFileDto userUploadFileDto) throws IOException {
 
 //        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //        String userId = userDetails.getUser().getEmail();
@@ -45,32 +44,47 @@ public class S3UploadService {
         User user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new BadRequestException(StatusMessage.Not_Found_User));
-        String userId = user.getEmail();
+        String userEmail = user.getEmail();
+
         if (userUploadFileDto.getTitle() == null || userUploadFileDto.getAddress() == null ||
-                userUploadFileDto.getLat() == 0.0 || userUploadFileDto.getLng() == 0.0) {
+                userUploadFileDto.getLat() == 0.0 || userUploadFileDto.getLng() == 0.0 ||
+                userUploadFileDto.getImg() == null || userUploadFileDto.getFile() == null) {
             throw new BadRequestException(StatusMessage.Upload_Error);
         }
-        int pos = userUploadFileDto.getFile().getOriginalFilename().lastIndexOf('.');
-        String extension = userUploadFileDto.getFile().getOriginalFilename().substring(pos + 1);
-        if (!extension.equals("pts")) throw new BadRequestException(StatusMessage.UploadFile_format_Error);
-        String fileName = "user/" + userId + "/" + userUploadFileDto.getTitle() + "/"
-                + userUploadFileDto.getFile().getOriginalFilename().substring(0, pos)
-                + "_" + userUploadFileDto.getAddress() + "_" + userUploadFileDto.getLat() + "_" + userUploadFileDto.getLng() + "." + extension;
+
+        List<String> urls = new ArrayList<>();
+
+        urls.add(uploadToS3(userUploadFileDto.getFile(), userEmail, userUploadFileDto.getTitle(), userUploadFileDto.getAddress(),
+                userUploadFileDto.getLat(), userUploadFileDto.getLng()));
+        urls.add(uploadToS3(userUploadFileDto.getImg(), userEmail, userUploadFileDto.getTitle(), userUploadFileDto.getAddress(),
+                userUploadFileDto.getLat(), userUploadFileDto.getLng()));
+
+        return urls;
+    }
+
+    private String uploadToS3(MultipartFile multipartFile, String userEmail, String title, String address, double lat, double lng) throws IOException {
+        int pos = multipartFile.getOriginalFilename().lastIndexOf('.');
+
+        String extension = multipartFile.getOriginalFilename().substring(pos + 1);
+
+        if (!(extension.equals("pts") || extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png")))
+            throw new BadRequestException(StatusMessage.UploadFile_format_Error);
+
+        String fileName = "user/" + userEmail + "/" + title + "/"
+                + multipartFile.getOriginalFilename().substring(0, pos)
+                + "_" + address + "_" + lat + "_" + lng + "." + extension;
 
         try {
-            MultipartFile file = userUploadFileDto.getFile();
             ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentType(file.getContentType());
-            metadata.setContentLength(file.getResource().contentLength());
-            amazonS3.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), metadata)
+            metadata.setContentType(multipartFile.getContentType());
+            metadata.setContentLength(multipartFile.getResource().contentLength());
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
-
         } catch (AmazonServiceException e) {
             e.printStackTrace();
         } catch (SdkClientException e) {
             e.printStackTrace();
         }
-
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 

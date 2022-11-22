@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,8 +20,8 @@ public class UploadApiController {
     @PostMapping("/upload")
     public AllResponse uploadFile(UserUploadFileDto userUploadFileDto) throws IOException {
 
-        String url = s3UploadService.uploadFile(userUploadFileDto);
+        List<String> urls = s3UploadService.uploadFile(userUploadFileDto);
 
-        return new AllResponse(StatusMessage.User_Upload_Success.getStatus(), StatusMessage.User_Upload_Success.getMessage(), 1, url);
+        return new AllResponse(StatusMessage.User_Upload_Success.getStatus(), StatusMessage.User_Upload_Success.getMessage(), urls.size(), urls);
     }
 }
