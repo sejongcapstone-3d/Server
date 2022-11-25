@@ -2,8 +2,10 @@ package capstone3d.Server.config;
 
 import capstone3d.Server.jwt.CustomAuthenticationEntryPoint;
 import capstone3d.Server.jwt.JwtAuthenticationFilter;
+import capstone3d.Server.jwt.JwtExceptionFilter;
 import capstone3d.Server.jwt.JwtTokenProvider;
 import capstone3d.Server.service.UserDetailsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +28,7 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -50,7 +53,8 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService),
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionFilter(objectMapper), JwtAuthenticationFilter.class);
         return http.build();
     }
 

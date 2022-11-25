@@ -1,5 +1,8 @@
 package capstone3d.Server.response;
 
+import lombok.Getter;
+
+@Getter
 public enum StatusMessage {
     Sign_Up_Success(200, "회원가입에 성공하였습니다."),
     Login_Success(200, "로그인에 성공하였습니다."),
@@ -35,13 +38,5 @@ public enum StatusMessage {
     StatusMessage(int status, String message) {
         this.status = status;
         this.message = message;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public String getMessage() {
-        return message;
     }
 }

@@ -2,6 +2,8 @@ package capstone3d.Server.jwt;
 
 import capstone3d.Server.domain.dto.Subject;
 import capstone3d.Server.domain.dto.UserDetails;
+import capstone3d.Server.exception.BadRequestException;
+import capstone3d.Server.response.StatusMessage;
 import capstone3d.Server.service.UserDetailsService;
 import io.jsonwebtoken.JwtException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,13 +38,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Subject subject = jwtTokenProvider.getSubject(atk);
                 String requestURI = request.getRequestURI();
                 if (subject.getType().equals("RTK") && !requestURI.equals("/reissue")) {
-                    throw new JwtException("토큰을 확인하세요.");
+                    throw new BadRequestException(StatusMessage.Unauthorized);
                 }
+
                 UserDetails userDetails = userDetailsService.loadUserByUsername(subject.getEmail());
+                if (requestURI.equals("/admin/upload") && !userDetails.getUser().getRole().equals("ROLE_ADMIN")) {
+                    throw new BadRequestException(StatusMessage.Forbidden);
+                }
+
+                if (subject.getType().equals("ATK") && requestURI.equals("/reissue")) {
+                    throw new BadRequestException(StatusMessage.Refresh_Token_Unauthorized);
+                }
+
                 Authentication token = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(token);
-            } catch (JwtException e) {
-                request.setAttribute("exception", e.getMessage());
+            } catch (BadRequestException e) {
+                throw new BadRequestException(e.getStatusMessage());
             }
         }
         filterChain.doFilter(request, response);
