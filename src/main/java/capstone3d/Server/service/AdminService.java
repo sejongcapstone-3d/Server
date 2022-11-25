@@ -33,8 +33,8 @@ public class AdminService {
                 .orElseThrow(() -> new BadRequestException(StatusMessage.Not_Found_User));
 
         if (adminUploadFileDto.getTitle() == null || adminUploadFileDto.getAddress() == null ||
-                adminUploadFileDto.getRoom_width() == 0 || adminUploadFileDto.getRoom_height() == 0 ||
-                adminUploadFileDto.getRoom_depth() == 0 || adminUploadFileDto.getLat() == 0.0 ||
+                adminUploadFileDto.getX() == 0 || adminUploadFileDto.getY() == 0 ||
+                adminUploadFileDto.getZ() == 0 || adminUploadFileDto.getLat() == 0.0 ||
                 adminUploadFileDto.getLng() == 0.0) {
             throw new BadRequestException(StatusMessage.Admin_Upload_Error);
         }
@@ -45,9 +45,9 @@ public class AdminService {
         Room room = new Room();
         room.setUser(user);
         room.setName(adminUploadFileDto.getTitle());
-        room.setRoom_width(adminUploadFileDto.getRoom_width());
-        room.setRoom_height(adminUploadFileDto.getRoom_height());
-        room.setRoom_depth(adminUploadFileDto.getRoom_depth());
+        room.setX(adminUploadFileDto.getX());
+        room.setY(adminUploadFileDto.getY());
+        room.setZ(adminUploadFileDto.getZ());
         if (urls.get("png") != null) {
             room.setRoom_img_url(urls.get("png"));
         } else if (urls.get("jpg") != null) {

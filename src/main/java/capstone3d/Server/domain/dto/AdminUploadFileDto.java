@@ -18,11 +18,11 @@ public class AdminUploadFileDto {
 
     private double lng;
 
-    private int room_width;
+    private double x;
 
-    private int room_height;
+    private double y;
 
-    private int room_depth;
+    private double z;
 
     private String address;
 }

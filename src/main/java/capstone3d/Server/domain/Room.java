@@ -24,11 +24,11 @@ public class Room {
 
     private String room_img_url;
 
-    private int room_width;
+    private double x;
 
-    private int room_height;
+    private double y;
 
-    private int room_depth;
+    private double z;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")

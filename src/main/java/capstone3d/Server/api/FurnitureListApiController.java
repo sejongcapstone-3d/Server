@@ -25,7 +25,7 @@ public class FurnitureListApiController {
     public AllResponse<FurnitureDto> furnitureList() {
         List<Furniture> furniture = furnitureRepository.findAll();
         List<FurnitureDto> collect = furniture.stream()
-                .map(f -> new FurnitureDto(f.getCategory(), f.getFurniture_url(), f.getFurniture_img_url(), f.getFurniture_width(), f.getFurniture_height(), f.getFurniture_depth()))
+                .map(f -> new FurnitureDto(f.getCategory(), f.getFurniture_url(), f.getFurniture_img_url(), f.getX(), f.getY(), f.getZ()))
                 .collect(Collectors.toList());
         if (furniture.isEmpty()) {
             return new AllResponse(StatusMessage.Get_FurnitureList_Fail.getStatus(), StatusMessage.Get_FurnitureList_Fail.getMessage(), furniture.size(), collect);
@@ -43,10 +43,10 @@ public class FurnitureListApiController {
 
         private String furniture_img_url;
 
-        private int furniture_width;
+        private int x;
 
-        private int furniture_height;
+        private int y;
 
-        private int furniture_depth;
+        private int z;
     }
 }

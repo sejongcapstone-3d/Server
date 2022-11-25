@@ -28,7 +28,7 @@ public class RoomApiController {
         User user = findRoom.getUser();
         String business_name = user.getBusiness_name();
         String phone = user.getPhone();
-        return new AllResponse(StatusMessage.Get_Room.getStatus(), StatusMessage.Get_Room.getMessage(), 1, new RoomUrlDto(findRoom.getName(), findRoom.getEmpty_room_url(), findRoom.getFull_room_url(), findRoom.getRoom_img_url(), findRoom.getRoom_width(), findRoom.getRoom_height(), findRoom.getRoom_depth(), business_name, phone));
+        return new AllResponse(StatusMessage.Get_Room.getStatus(), StatusMessage.Get_Room.getMessage(), 1, new RoomUrlDto(findRoom.getName(), findRoom.getEmpty_room_url(), findRoom.getFull_room_url(), findRoom.getRoom_img_url(), findRoom.getX(), findRoom.getY(), findRoom.getZ(), business_name, phone));
     }
 
     @Data
@@ -37,20 +37,20 @@ public class RoomApiController {
         private String empty_room_url;
         private String full_room_url;
         private String room_img_url;
-        private int room_width;
-        private int room_height;
-        private int room_depth;
+        private double x;
+        private double y;
+        private double z;
         private String business_name;
         private String phone;
 
-        public RoomUrlDto(String name, String empty_room_url, String full_room_url, String room_img_url, int room_width, int room_height, int room_depth, String business_name, String phone) {
+        public RoomUrlDto(String name, String empty_room_url, String full_room_url, String room_img_url, double x, double y, double z, String business_name, String phone) {
             this.name = name;
             this.empty_room_url = empty_room_url;
             this.full_room_url = full_room_url;
             this.room_img_url = room_img_url;
-            this.room_width = room_width;
-            this.room_height = room_height;
-            this.room_depth = room_depth;
+            this.x = x;
+            this.y = y;
+            this.z = z;
             this.business_name = business_name;
             this.phone = phone;
         }
