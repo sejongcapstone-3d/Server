@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/actuator/health_check").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/upload/**").authenticated()
+//                .antMatchers("/upload/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService),
