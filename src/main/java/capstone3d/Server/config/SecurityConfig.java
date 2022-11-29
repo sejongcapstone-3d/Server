@@ -66,6 +66,8 @@ public class SecurityConfig {
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true); /** 자격증명과 함께 요청을 할 수 있는지 여부. */
+        configuration.addExposedHeader("atk");
+        configuration.addExposedHeader("rtk");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
