@@ -2,6 +2,7 @@ package capstone3d.Server.service;
 
 import capstone3d.Server.domain.Room;
 import capstone3d.Server.domain.User;
+import capstone3d.Server.domain.dto.UserDetails;
 import capstone3d.Server.domain.dto.UserUploadFileDto;
 import capstone3d.Server.exception.BadRequestException;
 import capstone3d.Server.repository.UserRepository;
@@ -12,6 +13,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,17 +36,8 @@ public class S3UploadService {
 
     public List<String> uploadFile(UserUploadFileDto userUploadFileDto) throws IOException {
 
-//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        String userId = userDetails.getUser().getEmail();
-
-        /*
-         * 임시적으로 id로 업로드
-         * */
-        long id = userUploadFileDto.getUserId();
-        User user = userRepository
-                .findById(id)
-                .orElseThrow(() -> new BadRequestException(StatusMessage.Not_Found_User));
-        String userEmail = user.getEmail();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userEmail = userDetails.getUser().getEmail();
 
         if (userUploadFileDto.getTitle() == null || userUploadFileDto.getAddress() == null ||
                 userUploadFileDto.getLat() == 0.0 || userUploadFileDto.getLng() == 0.0 ||
